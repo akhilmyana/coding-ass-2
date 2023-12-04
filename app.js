@@ -41,6 +41,8 @@ const authToken = (request, response, next) => {
         response.status(401);
         response.send("Invalid JWT Token");
       } else {
+        request.username = payload.username;
+        request.userId = payload.userId
         next();
       }
     });
@@ -111,7 +113,7 @@ app.post("/login/", async (request, response) => {
   } else {
     const isValidPwd = await bcrypt.compare(password, user.password);
     if (isValidPwd) {
-      const payload = { username: username };
+      const payload = { username: username, userId: user.user_id };
       jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
       response.send(jwtToken);
     } else {
